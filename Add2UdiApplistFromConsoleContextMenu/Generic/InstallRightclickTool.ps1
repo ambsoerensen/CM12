@@ -15,7 +15,7 @@ $ConsoleDir = 'Microsoft Configuration Manager\AdminConsole\XmlStorage\Extension
 
 #Do not Edit
 $SccmConsoleGuid = '968164ab-af86-459c-b89e-d3a49c05d367'
-[XML]$template = Get-Content -Path .\_TemplateTDCHAddAppToUDI.xml
+[XML]$template = Get-Content -Path .\_TemplateAddAppToUDI.xml
 
 $installx64 = 1
 $installx86 = 1
@@ -33,7 +33,7 @@ Try
             $Value = $Value.Replace('ReplaceMe',"$env:ProgramFiles\$ConsoleDir\$SccmConsoleGuid\UdiApplicationList.ps1" )
             $_.Parameters = $Value
         }
-        $template.Save("$env:ProgramFiles\$ConsoleDir\$SccmConsoleGuid\TDCHAddAppToUDI.xml")
+        $template.Save("$env:ProgramFiles\$ConsoleDir\$SccmConsoleGuid\AddAppToUDI.xml")
 
         $installx64 = 0
     }
@@ -50,7 +50,7 @@ Try
             $_.Parameters = $Value
         }
     
-        $template.Save("${env:ProgramFiles(x86)}\$ConsoleDir\$SccmConsoleGuid\TDCHAddAppToUDI.xml")
+        $template.Save("${env:ProgramFiles(x86)}\$ConsoleDir\$SccmConsoleGuid\AddAppToUDI.xml")
 
         $installx86 = 0
     }
@@ -58,7 +58,7 @@ Try
 
 Catch 
 {
-    $MsgError = $Error[0] 
+    $MsgError = $_
             
     $MsgErrorLine = $_.InvocationInfo.ScriptLineNumber
                      
