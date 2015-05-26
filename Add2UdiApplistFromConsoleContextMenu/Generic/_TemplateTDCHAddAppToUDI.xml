@@ -1,0 +1,38 @@
+<ActionDescription Class="Group" GroupAsRegion="true" DisplayName="UDI App List" MnemonicDisplayName="UDI App List" Description="Modify UDI Applications list">
+<ShowOn>
+	<string>DefaultHomeTab</string>
+	<string>ContextMenu</string>
+</ShowOn>  
+<ActionGroups>
+<ActionDescription Class="Executable" DisplayName="Add New Application" MnemonicDisplayName="Add New Application" Description = "Add a an Application to the UDI Applications list">
+  <ShowOn>
+    <string>DefaultHomeTab</string>
+    <string>ContextMenu</string>
+    </ShowOn>
+  <Executable>
+    <FilePath>Powershell.exe</FilePath>
+    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -New</Parameters>
+  </Executable>
+</ActionDescription>
+<ActionDescription Class="Executable" DisplayName="Update Application" MnemonicDisplayName="Update Application" Description = "Update all application entries in the Application list">
+  <ShowOn>
+    <string>DefaultHomeTab</string>
+    <string>ContextMenu</string>
+    </ShowOn>
+  <Executable>
+    <FilePath>Powershell.exe</FilePath>
+    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Update</Parameters>
+  </Executable>
+</ActionDescription>
+<ActionDescription Class="Executable" DisplayName="Delete Application" MnemonicDisplayName="Delete Application" Description = "Remove all application entries from the list">
+  <ShowOn>
+    <string>DefaultHomeTab</string>
+    <string>ContextMenu</string>
+    </ShowOn>
+  <Executable>
+    <FilePath>Powershell.exe</FilePath>
+    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Delete</Parameters>
+  </Executable>
+</ActionDescription>
+ </ActionGroups>
+</ActionDescription>
