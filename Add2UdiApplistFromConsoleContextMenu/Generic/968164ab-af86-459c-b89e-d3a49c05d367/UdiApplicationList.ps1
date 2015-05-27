@@ -61,13 +61,13 @@ PARAM (
 #==============================================
 
 #SCCM Servername
-$SMSServer = 'Primary SiteServer'
+$SMSServer = ''
 
 #Backup path for 'UDIWizard_Config.xml.app'
-$BackupDir = 'BackupPath'
+$BackupDir = ''
 
 #Path to 'UDIWizard_Config.xml.app'
-$XMLPath = 'PAthToUDIWizard_Config.xml.app'
+$XMLPath = ''
 
 #==============================================
 #  DEFAULT VALUES END
@@ -119,15 +119,22 @@ If ($New -eq $true)
     #Choose Group GUI
     $objForm = New-Object -TypeName System.Windows.Forms.Form 
     $objForm.Text = 'Select a Group'
-    $objForm.Size = New-Object -TypeName System.Drawing.Size -ArgumentList (300, 200) 
+    $objForm.Size = New-Object -TypeName System.Drawing.Size -ArgumentList (300, 250) 
     $objForm.StartPosition = 'CenterScreen'
 
     $objForm.KeyPreview = $true
+
+    $$CheckBox = New-Object -TypeName System.Windows.Forms.CheckBox
+    $CheckBox.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (10, 120)
+    $CheckBox.Text = "Selected"
+
+    $objForm.Controls.Add($CheckBox)
    
     $OKButton = New-Object -TypeName System.Windows.Forms.Button
-    $OKButton.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (75, 120)
+    $OKButton.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (10, 155)
     $OKButton.Size = New-Object -TypeName System.Drawing.Size -ArgumentList (75, 23)
     $OKButton.Text = 'OK'
+
     $OKButton.Add_Click({
             #Add New Application when ok is presses
             
@@ -192,9 +199,10 @@ If ($New -eq $true)
     $objForm.Controls.Add($OKButton)
 
     $CancelButton = New-Object -TypeName System.Windows.Forms.Button
-    $CancelButton.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (150, 120)
+    $CancelButton.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (95, 155)
     $CancelButton.Size = New-Object -TypeName System.Drawing.Size -ArgumentList (75, 23)
     $CancelButton.Text = 'Cancel'
+
     $CancelButton.Add_Click({
             $objForm.Close()
         }
