@@ -1,14 +1,13 @@
-﻿# FileName: PowerShellTemplate.ps1
-#=============================================
+﻿#=============================================
 <#
-    Script Name: UdiApplicationList.ps1
-    Created: 08/04/2015
-    Author: Asbjørn Sørensen
-    Company: TDCH
-    Email: ambs@tdchosting.dk / cm@tdchosting.dk
-    Web: 
-    Reqrmnts: .net Framework
-    Keywords: Add, update remove application from UDI.
+        Script Name: UdiApplicationList.ps1
+        Created: 08/04/2015
+        Author: Asbjørn Sørensen
+        Company: TDCH
+        Email: ambs@tdchosting.dk / cm@tdchosting.dk
+        Web: 
+        Reqrmnts: .net Framework
+        Keywords: Add, update remove application from UDI.
     
 #>
 #==============================================
@@ -17,28 +16,28 @@
 #==============================================
 <# 
 
-RightclickTool that enables you to edit the UDI Application list from the
-SCCM console. 
+        RightclickTool that enables you to edit the UDI Application list from the
+        SCCM console. 
 
-Features:
-Add new Application - Adds one Application to one Application group. 
+        Features:
+        Add new Application - Adds one Application to one Application group. 
 
-Update: Update dependant name values for all instances of the application in the list.
+        Update: Update dependant name values for all instances of the application in the list.
         eg. the name of the package have changed. 
 
-Remove: Remove all instanes of the marked application from the Aplicaiton list. 
+        Remove: Remove all instanes of the marked application from the Aplicaiton list. 
 
 
-Examples.
+        Examples.
 
-Add new Application to list. 
-UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -New
+        Add new Application to list. 
+        UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -New
 
-Update Application in list
-UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -Update
+        Update Application in list
+        UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -Update
 
-Remove Application from list
-UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -Delete
+        Remove Application from list
+        UdiApplicationList.ps1 -ModelName ##SUB:ModelName## -Delete
 
 #>
 #==============================================
@@ -67,7 +66,7 @@ $SMSServer = ''
 $BackupDir = ''
 
 #Path to 'UDIWizard_Config.xml.app'
-$XMLPath = ''
+$XMLPath = 'C:\Users\ambs\OneDrive for Business\Git\CM12\Add2UdiApplistFromConsoleContextMenu\UDIWizard_Config.xml.app'
 
 #==============================================
 #  DEFAULT VALUES END
@@ -84,7 +83,7 @@ Try
     $FoundApp = Get-WmiObject -Namespace 'Root\SMS\Site_PS1' -Class SMS_ApplicationLatest -Filter "ModelName='$ModelName'" -ComputerName $SMSServer -ErrorAction Stop
 
     #Get XML containing Apps
-    [XML]$CurrentApplicationlist = Get-Content $XMLPath -ErrorAction Stop
+    [XML]$CurrentApplicationlist = Get-Content $XMLPath -Force -ErrorAction Stop
 
     #Backup Current XML File
     $Date = (Get-Date -DisplayHint Date -Format s).Replace(':','-')
@@ -93,7 +92,7 @@ Try
 }
 Catch 
 {
-    $MsgError = $Error[0] 
+    $MsgError = $_
             
     $MsgErrorLine = $_.InvocationInfo.ScriptLineNumber
                      
@@ -124,9 +123,9 @@ If ($New -eq $true)
 
     $objForm.KeyPreview = $true
 
-    $$CheckBox = New-Object -TypeName System.Windows.Forms.CheckBox
+    $CheckBox = New-Object -TypeName System.Windows.Forms.CheckBox
     $CheckBox.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (10, 120)
-    $CheckBox.Text = "Selected"
+    $CheckBox.Text = 'Selected'
 
     $objForm.Controls.Add($CheckBox)
    
@@ -136,7 +135,7 @@ If ($New -eq $true)
     $OKButton.Text = 'OK'
 
     $OKButton.Add_Click({
-            #Add New Application when ok is presses
+            #Add New Application when ok is pressed
             
             #Get highest ID, to avoid dublicates
             $CurrentID = ($CurrentApplicationlist.Applications.ApplicationGroup).Application | Select-Object -ExpandProperty id
@@ -151,13 +150,16 @@ If ($New -eq $true)
                 }
             }
 
+            $finalID = $HighestID+1
+
+
             #Assign listbox selection to Variable
             $AppGroup = $objListBox.Text
 
             #Add New application
             $Element = ($CurrentApplicationlist.SelectNodes("//ApplicationGroup[@Name='$AppGroup']")).application[0].clone()
             $Element.DisplayName = $FoundApp.LocalizedDisplayName
-            $Element.id = ($HighestID+1).ToString()
+            $Element.id = ($finalID).ToString()
             $Element.Name = $FoundApp.LocalizedDisplayName
             $Element.Guid = $FoundApp.ModelName
             $Element.ApplicationMappings.SelectNodes('//Match') |  ForEach-Object -Process {
@@ -172,11 +174,22 @@ If ($New -eq $true)
             {
                 ($CurrentApplicationlist.SelectNodes("//ApplicationGroup[@Name='$AppGroup']")).AppendChild($Element)
     
-                $CurrentApplicationlist.Save("$XMLPath")
+            if ($CheckBox.Checked -eq $true) {
+                
+                $SelectedElement = $CurrentApplicationlist.Applications.SelectedApplications.FirstChild.Clone()
+                $SelectedElement.'Application.Id' = $finalID.ToString()
+
+                #append change
+
+                $CurrentApplicationlist.Applications.SelectedApplications.AppendChild($SelectedElement)
+
+                
+            }
+            $CurrentApplicationlist.Save("$XMLPath")
             }
             Catch 
             {
-                $MsgError = $Error[0] 
+                $MsgError = $_
             
                 $MsgErrorLine = $_.InvocationInfo.ScriptLineNumber
                      
@@ -192,9 +205,11 @@ If ($New -eq $true)
                     }
                 }
             }
-                
+            
+
             $objForm.Close()
-        }
+            }
+        
     )
     $objForm.Controls.Add($OKButton)
 
@@ -287,7 +302,7 @@ if ($Update -eq $true)
     }
     Catch 
     {
-        $MsgError = $Error[0] 
+        $MsgError = $_
             
         $MsgErrorLine = $_.InvocationInfo.ScriptLineNumber
                      
@@ -356,7 +371,7 @@ If ($Delete -eq $true)
     }
     Catch 
     {
-        $MsgError = $Error[0] 
+        $MsgError = $_
             
         $MsgErrorLine = $_.InvocationInfo.ScriptLineNumber
                      
