@@ -2,46 +2,81 @@
 <ShowOn>
 	<string>DefaultHomeTab</string>
 	<string>ContextMenu</string>
-</ShowOn>  
+</ShowOn>
+<ImagesDescription>
+		<ResourceAssembly>
+		<Assembly>AdminUI.UIResources.dll</Assembly>
+		<Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+		</ResourceAssembly>
+		<ImageResourceName>ApplicationProperties</ImageResourceName>
+	</ImagesDescription>  
 <ActionGroups>
 <ActionDescription Class="Executable" DisplayName="Add New Application" MnemonicDisplayName="Add New Application" Description = "Add a an Application to the UDI Applications list">
   <ShowOn>
     <string>DefaultHomeTab</string>
     <string>ContextMenu</string>
-    </ShowOn>
+  </ShowOn>
+	<ImagesDescription>
+		<ResourceAssembly>
+		<Assembly>AdminUI.UIResources.dll</Assembly>
+		<Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+		</ResourceAssembly>
+		<ImageResourceName>Add</ImageResourceName>
+	</ImagesDescription>
   <Executable>
     <FilePath>Powershell.exe</FilePath>
-    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -New</Parameters>
+    <Parameters>-file "ReplaceMe" -ModelName ##SUB:ModelName## -New</Parameters>
   </Executable>
 </ActionDescription>
 <ActionDescription Class="Executable" DisplayName="Update Application" MnemonicDisplayName="Update Application" Description = "Update all application entries in the Application list">
   <ShowOn>
     <string>DefaultHomeTab</string>
     <string>ContextMenu</string>
-    </ShowOn>
+   </ShowOn>
+	<ImagesDescription>
+		<ResourceAssembly>
+		<Assembly>AdminUI.UIResources.dll</Assembly>
+		<Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+		</ResourceAssembly>
+		<ImageResourceName>Update</ImageResourceName>
+	</ImagesDescription>
   <Executable>
     <FilePath>Powershell.exe</FilePath>
-    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Update</Parameters>
+    <Parameters>-file "ReplaceMe" -ModelName ##SUB:ModelName## -Update</Parameters>
   </Executable>
 </ActionDescription>
 <ActionDescription Class="Executable" DisplayName="Delete Application" MnemonicDisplayName="Delete Application" Description = "Remove all application entries from the list">
   <ShowOn>
     <string>DefaultHomeTab</string>
     <string>ContextMenu</string>
-    </ShowOn>
+   </ShowOn>
+	<ImagesDescription>
+		<ResourceAssembly>
+		<Assembly>AdminUI.UIResources.dll</Assembly>
+		<Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+		</ResourceAssembly>
+		<ImageResourceName>Delete</ImageResourceName>
+	</ImagesDescription>
   <Executable>
     <FilePath>Powershell.exe</FilePath>
-    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Delete</Parameters>
+    <Parameters>-file "ReplaceMe" -ModelName ##SUB:ModelName## -Delete</Parameters>
   </Executable>
 </ActionDescription>
  <ActionDescription Class="Executable" DisplayName="Check List" MnemonicDisplayName="Check List" Description = "Runs a Consistency check on the UDI Application list">
   <ShowOn>
     <string>DefaultHomeTab</string>
     <string>ContextMenu</string>
-    </ShowOn>
+   </ShowOn>
+	<ImagesDescription>
+		<ResourceAssembly>
+		<Assembly>AdminUI.UIResources.dll</Assembly>
+		<Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+		</ResourceAssembly>
+		<ImageResourceName>Approve</ImageResourceName>
+	</ImagesDescription>
   <Executable>
     <FilePath>Powershell.exe</FilePath>
-    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Check</Parameters>
+    <Parameters>-file "ReplaceMe" -Check</Parameters>
   </Executable>
 </ActionDescription>
 </ActionGroups>

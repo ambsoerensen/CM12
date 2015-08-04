@@ -63,7 +63,7 @@ PARAM (
     [SWITCH]$New,
     [SWITCH]$Update,
     [SWITCH]$Delete,
-    [SEITCH]$Check
+    [SWITCH]$Check
 
 )
 #==============================================
@@ -77,7 +77,7 @@ $SMSServer = ''
 $BackupDir = ''
 
 #Path to 'UDIWizard_Config.xml.app'
-$XMLPath = ''
+$XMLPath = 'C:\Users\ambs\OneDrive for Business\Git\CM12\Tools\Add2UdiApplistFromConsoleContextMenu\UDIWizard_Config.xml.app'
 
 #==============================================
 #  DEFAULT VALUES END
@@ -123,6 +123,41 @@ Catch
 #Add a new application to a specific subgroup. 
 If ($New -eq $true)
 {
+    $FoundApp.get()
+    [XML]$FoundAppXML = $FoundApp.SDMPackageXML
+    #Checks
+
+    #Check for expired App
+    if ($FoundApp.IsExpired -ne $false) 
+    {
+        $oReturn = ,
+        [System.Windows.Forms.MessageBox]::Show('Application is expired, Please choose an active application', 
+            'Error', [System.Windows.Forms.MessageBoxButtons]::OK, 
+        [System.Windows.Forms.MessageBoxIcon]::exclamation)
+
+        switch ($oReturn){
+            'OK' 
+            {
+                Exit
+            }
+        }
+    }
+    #Check auto install
+    IF ($FoundAppXML.AppMgmtDigest.Application.AutoInstall -ne $true) 
+    {
+        $oReturn = ,
+        [System.Windows.Forms.MessageBox]::Show('Application not enabled for install through Task Sequence', 
+            'Error', [System.Windows.Forms.MessageBoxButtons]::OK, 
+        [System.Windows.Forms.MessageBoxIcon]::exclamation)
+
+        switch ($oReturn){
+            'OK' 
+            {
+                Exit
+            }
+        }            
+    }
+
     #Get current application groups:
     $AppGroups = $CurrentApplicationlist.Applications.ApplicationGroup |  Select-Object -ExpandProperty 'Name'
     
@@ -134,10 +169,6 @@ If ($New -eq $true)
 
     $objForm.KeyPreview = $true
 
-    $CheckBox = New-Object -TypeName System.Windows.Forms.CheckBox
-    $CheckBox.Location = New-Object -TypeName System.Drawing.Size -ArgumentList (10, 120)
-    $CheckBox.Text = 'Selected'
-
     $objForm.Controls.Add($CheckBox)
    
     $OKButton = New-Object -TypeName System.Windows.Forms.Button
@@ -147,44 +178,6 @@ If ($New -eq $true)
 
     #Add New Application when ok is pressed
     $OKButton.Add_Click({
-            $FoundApp.get()
-            [XML]$FoundAppXML = $FoundApp.SDMPackageXML
-
-
-            #Checks
-
-            #Check for expired App
-            if ($FoundApp.IsExpired -ne $false) 
-            {
-                $oReturn = ,
-                [System.Windows.Forms.MessageBox]::Show('Application is expired, Please choose an active application', 
-                    'Error', [System.Windows.Forms.MessageBoxButtons]::OK, 
-                [System.Windows.Forms.MessageBoxIcon]::exclamation)
-
-                switch ($oReturn){
-                    'OK' 
-                    {
-                        Exit
-                    }
-                }
-            }
-            #Check auto install
-            IF ($FoundAppXML.AppMgmtDigest.Application.AutoInstall -ne $true) 
-            {
-                $oReturn = ,
-                [System.Windows.Forms.MessageBox]::Show('Application not enabled for install through Task Sequence', 
-                    'Error', [System.Windows.Forms.MessageBoxButtons]::OK, 
-                [System.Windows.Forms.MessageBoxIcon]::exclamation)
-
-                switch ($oReturn){
-                    'OK' 
-                    {
-                        Exit
-                    }
-                }            
-            }
-            
-            
             #Add application
 
             #Get highest ID, to avoid dublicates
@@ -207,8 +200,7 @@ If ($New -eq $true)
             $AppGroup = $objListBox.Text
 
             #Add New application
-
-
+            
             If (($CurrentApplicationlist.SelectNodes("//ApplicationGroup[@Name='$AppGroup']")).application.Count -eq 1) 
             {
                 $Element = ($CurrentApplicationlist.SelectNodes("//ApplicationGroup[@Name='$AppGroup']")).application.clone()
@@ -230,6 +222,11 @@ If ($New -eq $true)
                 $_.'#text' = $FoundApp.LocalizedDisplayName
             }
          
+            #set As Selected
+            $CurrentApplicationlist.Applications.SelectedApplications.
+
+
+
             #Append Changes
             Try
             {
@@ -457,6 +454,7 @@ If ($Check -eq $true)
 
 
 
+
         UDI Application list consistency check
 
         Checks the following settings:
@@ -482,17 +480,19 @@ If ($Check -eq $true)
     #Check names of applications.
     ForEach ($x in $allapps)
     {
+        #progress
+        $i++
+        $Name = $x.Name
+        if ([STRING]::IsNullOrEmpty($Name)) 
+        {
+            $Name = ' '
+        }
+        Write-Progress -Activity 'Consistency Check' -Status "$Name" -PercentComplete (($i / $allapps.Count) * 100)
+
         If (![STRING]::IsNullOrEmpty($x))
         {
             $ModelName = $x.Guid
-            $Name = $x.Name
-        
-            #increment progress
-            $i++
-            Write-Progress -Activity 'Consistency Check' -Status "$Name" -PercentComplete (($i / $allapps.Count) * 100)
-        
-        
-        
+            
             $AppObject = Get-WmiObject -ComputerName $SMSServer -Namespace 'ROOT\SMS\Site_PS1' -Class 'SMS_ApplicationLatest' -Filter "ModelName = '$ModelName'"
     
             $AppObject.get()
@@ -518,9 +518,6 @@ If ($Check -eq $true)
                 $ErrorCheck = 1 
             }
         }
-        
-        #Just increment to keep progress spot on
-        $i++
     }
 
     #Check for dublicate Id
