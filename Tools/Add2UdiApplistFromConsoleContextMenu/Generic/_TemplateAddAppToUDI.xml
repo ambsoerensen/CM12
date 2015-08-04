@@ -34,5 +34,15 @@
     <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Delete</Parameters>
   </Executable>
 </ActionDescription>
- </ActionGroups>
+ <ActionDescription Class="Executable" DisplayName="Check List" MnemonicDisplayName="Check List" Description = "Runs a Consistency check on the UDI Application list">
+  <ShowOn>
+    <string>DefaultHomeTab</string>
+    <string>ContextMenu</string>
+    </ShowOn>
+  <Executable>
+    <FilePath>Powershell.exe</FilePath>
+    <Parameters>-WindowStyle Minimized -file "ReplaceMe" -ModelName ##SUB:ModelName## -Check</Parameters>
+  </Executable>
+</ActionDescription>
+</ActionGroups>
 </ActionDescription>
