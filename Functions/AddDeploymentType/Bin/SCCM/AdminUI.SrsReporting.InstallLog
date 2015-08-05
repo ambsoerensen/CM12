@@ -1,0 +1,12 @@
+﻿Installing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.dll'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.dll
+   logtoconsole = 
+Committing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.dll'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.SrsReporting.dll
+   logtoconsole = 

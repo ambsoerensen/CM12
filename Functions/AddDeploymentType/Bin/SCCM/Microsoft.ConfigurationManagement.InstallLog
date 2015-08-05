@@ -1,0 +1,13 @@
+﻿Installing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.exe'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.exe
+   logtoconsole = 
+Creating performance counter category ConfigMgr 2012 Console.
+Committing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.exe'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.exe
+   logtoconsole = 

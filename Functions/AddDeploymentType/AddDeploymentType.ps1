@@ -53,10 +53,12 @@
     {
         #load Module and assemblies.
         $ScriptDir = Get-Location
-        g       
+               
+        Import-Module "$ScriptDir\Bin\SCCM\ConfigurationManager.psd1"
+
         $null = [system.Reflection.Assembly]::LoadFile("$ScriptDir\Bin\SCCM\Microsoft.ConfigurationManagement.ApplicationManagement.dll")
         $null = [system.Reflection.Assembly]::LoadFile("$ScriptDir\Bin\SCCM\Microsoft.ConfigurationManagement.ApplicationManagement.MsiInstaller.dll")
-        
+
         #get application by displayname and revision
         $Application = Get-WmiObject -Namespace "Root\SMS\Site_$Sitecode" -Class SMS_ApplicationLatest -ComputerName $SiteServer -Filter "LocalizedDisplayName='$ApplicationName'"
         #load lazy properties (includes XML)

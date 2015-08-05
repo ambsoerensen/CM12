@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<helpItems xmlns="http://msh" schema="maml">
+    <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+        <command:details>
+            <command:name>
+                Get-CMAccessLicense
+            </command:name>
+            <maml:description>
+                <maml:para>Gets license usage information for all the servers and clients within scope of System Center 2012 Configuration Manager.</maml:para>
+            </maml:description>
+            <maml:copyright>
+                <maml:para></maml:para>
+            </maml:copyright>
+            <command:verb>Get</command:verb>
+            <command:noun>CMAccessLicense</command:noun>
+            <dev:version></dev:version>
+        </command:details>
+        <maml:description>
+            <maml:para>
+                The Get-CMAccessLicense cmdlet gets information about license usage for all the servers and clients within scope of System Center 2012 Configuration Manager.
+
+The cmdlet returns a list of licensable features and a list of unique users and devices per unique licensable feature.
+            </maml:para>
+        </maml:description>
+        <!-- Cmdlet syntax section-->
+        <command:syntax>
+            <command:syntaxItem>
+                <maml:name>Get-CMAccessLicense</maml:name>
+                <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                    <maml:name>License</maml:name>
+                    <maml:description>
+                        <maml:para>
+                            Directs Get-CMAccessLicense to generate list of licensable features for all the servers and clients within scope of System Center 2012 Configuration Manager.
+
+The license name from the output can be passed to '-LicenseName' parameter to get list of unique users and devices for that specific license.
+                        </maml:para>
+                    </maml:description>
+                </command:parameter>
+                <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                    <maml:name>LicenseName</maml:name>
+                    <maml:description>
+                        <maml:para>
+                            Directs Get-CMAccessLicense to generate list of unique users and devices for the specified licensable feature.
+                        </maml:para>
+                    </maml:description>
+                    <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+                </command:parameter>
+                <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                    <maml:name>Count</maml:name>
+                    <maml:description>
+                        <maml:para>
+                            When used with "LicenseName" parameter, it directs Get-CMAccessLicense to output the count of unique users and devices for the specified licensable feature.
+                        </maml:para>
+                    </maml:description>
+                </command:parameter>
+            </command:syntaxItem>
+        </command:syntax>
+        <!-- Cmdlet parameter section  -->
+        <command:parameters>
+            <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                <maml:name>License</maml:name>
+                <maml:description>
+                    <maml:para>
+                        Directs Get-CMAccessLicense to generate list of licensable features for all the servers and clients within scope of System Center 2012 Configuration Manager.
+
+The license name from the output can be passed to '-LicenseName' parameter to get list of unique users and devices for that specific license.
+                    </maml:para>
+                </maml:description>
+            </command:parameter>
+            <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                <maml:name>LicenseName</maml:name>
+                <maml:description>
+                    <maml:para>
+                        Directs Get-CMAccessLicense to generate list of unique users and devices for the specified licensable feature.
+                    </maml:para>
+                </maml:description>
+                <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+            </command:parameter>
+            <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+                <maml:name>Count</maml:name>
+                <maml:description>
+                    <maml:para>
+                        When used with "LicenseName" parameter, it directs Get-CMAccessLicense to output the count of unique users and devices for the specified licensable feature.
+                    </maml:para>
+                </maml:description>
+            </command:parameter>
+        </command:parameters>
+        <!-- Input - Output section-->
+        <command:inputTypes>
+            <command:inputType>
+                <dev:type>
+                    <maml:name></maml:name>
+                    <maml:uri/>
+                    <maml:description>
+                        <maml:para>
+                            <!-- description  -->
+
+                        </maml:para>
+                    </maml:description>
+                </dev:type>
+                <maml:description></maml:description>
+            </command:inputType>
+        </command:inputTypes>
+        <command:returnValues>
+            <command:returnValue>
+                <dev:type>
+                    <maml:name></maml:name>
+                    <maml:uri />
+                    <maml:description>
+                        <maml:para>
+                            <!-- description  -->
+                        </maml:para>
+                    </maml:description>
+                </dev:type>
+                <maml:description></maml:description>
+            </command:returnValue>
+        </command:returnValues>
+        <!-- Notes section  -->
+        <maml:alertSet>
+            <maml:title></maml:title>
+            <maml:alert>
+                <maml:para>
+                    You can pipe the output from Get-CMAccessLicense to standard PowerShell cmdlets to process the output like format-list, export-csv.
+
+The output from the cmdlet with '-License' parameter shows list of licensable features: Product name, License name, Unit label, Tabulation method.
+
+The output from the cmdlet with '-LicenseName' parameter shows list of unique users per licensable feature: User ID (optional), Device ID, License Specific ID (optional) and some other information.
+                </maml:para>
+            </maml:alert>
+            <maml:alert>
+                <maml:para></maml:para>
+            </maml:alert>
+        </maml:alertSet>
+        <!-- Example section  -->
+        <command:examples>
+
+            <command:example>
+                <maml:title>
+                    -------------------------- EXAMPLE 1 --------------------------
+                </maml:title>
+                <maml:introduction>
+                    <maml:para>C:\PS&gt;</maml:para>
+                </maml:introduction>
+                <dev:code>Get-CMAccessLicense -License</dev:code>
+                <dev:remarks>
+                    <maml:para>This command gets list of licensable features for all the servers and clients within scope of System Center 2012 Configuration Manager.</maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                </dev:remarks>
+                <command:commandLines>
+                    <command:commandLine>
+                        <command:commandText></command:commandText>
+                    </command:commandLine>
+                </command:commandLines>
+            </command:example>
+
+            <command:example>
+                <maml:title>
+                    -------------------------- EXAMPLE 2 --------------------------
+                </maml:title>
+                <maml:introduction>
+                    <maml:para>C:\PS&gt;</maml:para>
+                </maml:introduction>
+                <dev:code>Get-CMAccessLicense -LicenseName ConfigMgr_2012_CoreClient</dev:code>
+                <dev:remarks>
+                    <maml:para>
+                        This example shows how to get list of unique users, device (optional), License-specific unique ID (optional) for the specified license.
+                    </maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                </dev:remarks>
+                <command:commandLines>
+                    <command:commandLine>
+                        <command:commandText></command:commandText>
+                    </command:commandLine>
+                </command:commandLines>
+            </command:example>
+
+            <command:example>
+                <maml:title>
+                    -------------------------- EXAMPLE 3 --------------------------
+                </maml:title>
+                <maml:introduction>
+                    <maml:para>C:\PS&gt;</maml:para>
+                </maml:introduction>
+                <dev:code>Get-CMAccessLicense -LicenseName ConfigMgr_2012_EndpointClient -Count</dev:code>
+                <dev:remarks>
+                    <maml:para>
+                        This example shows how to use Get-CMAccessLicense to get the count of unique users for the specified license.
+                    </maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                    <maml:para></maml:para>
+                </dev:remarks>
+                <command:commandLines>
+                    <command:commandLine>
+                        <command:commandText></command:commandText>
+                    </command:commandLine>
+                </command:commandLines>
+            </command:example>
+        </command:examples>
+        <!-- Link section  -->
+        <maml:relatedLinks>
+            <maml:navigationLink>
+                <maml:linkText></maml:linkText>
+                <maml:uri/>
+            </maml:navigationLink>
+        </maml:relatedLinks>
+    </command:command>
+</helpItems>

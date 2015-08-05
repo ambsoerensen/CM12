@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Rules>
+  <Rule Name="IsServiceRunning">
+    <Input Name="ServiceName" Value="SMS_EXECUTIVE" />
+  </Rule>
+  <Rule Name="IsComponentRunning">
+    <Input Name="ComponentName" Value="SMS_REPLICATION_CONFIGURATION_MONITOR" />    
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsServiceRunning">
+        <Input Name="ServiceName" Value="SMS_EXECUTIVE" />
+      </Rule>
+    </Dependency>
+  </Rule>
+  <Rule Name="IsRcmCreateInstanceWorking">
+    <Dependency  DependencyType="S:S">
+      <Rule Name="IsServiceRunning">
+        <Input Name="ServiceName" Value="SMS_EXECUTIVE" />
+      </Rule>
+    </Dependency>
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsComponentRunning">
+        <Input Name="ComponentName" Value="SMS_REPLICATION_CONFIGURATION_MONITOR" />
+      </Rule>
+    </Dependency>
+  </Rule>
+  <Rule Name="IsSqlDynamicPortEnabled" />
+  <Rule Name="IsSqlVersionCorrect" />
+  <Rule Name="IsNetworkDownBetweenSites" />
+  <Rule Name="IsConfigMgrDatabaseOutOfSpace" >
+    <Input Name="MinimumFreeSpacePercentage" Value="5" />
+  </Rule>
+  <Rule Name="IsTempDatabaseOutOfSpace" >
+    <Input Name="MinimumFreeSpacePercentage" Value="5" />
+  </Rule>
+  <Rule Name="DoesBrokerConfigurationExist" />
+  <Rule Name="DoesBrokerPortConflictExist" />
+  <Rule Name="DoesBrokerCertificateMatch" />
+  <Rule Name="DoesValidPublicKeyExchangeExist" />
+  <Rule Name="DoesValidLocalSystemSqlLoginExist" />
+  <Rule Name="IsTransmissionStuck">
+    <Dependency DependencyType="ST:S">
+      <Rule Name="DoesBrokerCertificateMatch" />      
+    </Dependency>
+  </Rule>
+  <Rule Name="IsBrokerDisabled" />
+  <Rule Name="IsSysCommitTabError" />
+  <Rule Name="DoesFileReplicationRouteExist" />
+  <Rule Name="IsSiteActive" >
+    <Dependency DependencyType="ST:T">
+      <Rule Name="DoesFileReplicationRouteExist" />
+    </Dependency>
+  </Rule>
+  <Rule Name="IsTimeInSync" />
+  <Rule Name="IsSendHistoryNull" />
+  <Rule Name="DoesKeyConflictExist" />
+  <Rule Name="CheckDegradedLinks">
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsSiteActive" />
+    </Dependency>
+  </Rule>
+  <Rule Name="CheckFailedLinks">
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsSiteActive" />
+    </Dependency>
+  </Rule>
+  <Rule Name="IsQueueDisabled">
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsSiteActive" />
+    </Dependency>
+  </Rule>
+  <Rule Name="IsChangeTrackingEnabled" />
+  <Rule Name="IsLinkedServerConnectionWorking">
+    <Dependency DependencyType="S:S">
+      <Rule Name="IsSiteActive" />
+    </Dependency>
+  </Rule>
+</Rules>

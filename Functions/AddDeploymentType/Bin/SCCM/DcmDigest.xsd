@@ -1,0 +1,1473 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="DcmDigest"
+                  targetNamespace="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration"
+                  elementFormDefault="qualified"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns ="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration" 
+                  xmlns:rules="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"
+                  version="5">
+
+    <!--  version 5 :
+        Added following features -
+        - Setting Reference
+        - Rule outside setting definition
+        - Simple Rule, Conditional Rule, DeploymentType Rule, OperatingSystemDiscovery Condition, PlatformApplicability Rule
+        - Rules based on new expression schema - rules.xsd
+        - Removal of unsued/invalid elements
+    -->
+    <!-- version 4 : 
+        -   Changed the RuleTypeBase's OperandA datatype to xs:string to allow the specification of empty strings
+        -   Modified the RootComplexSettingType and ComplexSetting type. Now only RootComplexSettingType can
+            include ParentSimpleSettingReferences.
+    -->
+    
+    <!-- version 3 : 
+        -   Added extensionElements at various places in the schema
+        -   Added MinVersion attribute
+        -   Added AuthoringVersion attribute
+        -   Added ExternalConfigurationItemReference for supporting partially described CIs
+        -   Added ExternalXPathDiscoveryInfo into the OtherDiscoverySource for supporting partially described CIs
+        -   Added ExternalRule into the SimpleSetting for supporting partially described CIs
+        -   Added wildcard extensions to several places in the schema for future extensions
+    -->
+    
+    <!--Note: It is a best-practice that instance documents conforming to this schema should include a 
+        comment that references this schema's version attribute-->
+
+    <!--Import other schemas -->
+    <xs:import namespace="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"/>
+  
+    <!--Substitution group heads-->
+    <xs:element name="ConfigurationItem" type="tns:ConfigurationItemType" abstract="true"/>
+    <xs:element name="ConfigurationItemWithContents" type="tns:ConfigurationItemWithContentsType" abstract="true"/>
+    <xs:element name="Part" type="tns:PartType" abstract="true"/>
+    <xs:element name="DiscoverySource" type="tns:DiscoverySourceType" abstract="true"/>
+    <xs:element name="OptimizationBase" type="tns:OptimizationBaseType" abstract="true" />
+
+    <!--Elements-->
+
+    <!--Configuration Item elements-->
+    <xs:element name="Baseline" type="tns:BaselineType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="Application" type="tns:ApplicationType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+    <xs:element name="OperatingSystem" type="tns:OperatingSystemType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+    <xs:element name="BusinessPolicy" type="tns:BusinessPolicyType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+    <xs:element name="Platform" type="tns:PlatformConfigurationItemType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+    <xs:element name="SoftwareUpdate" type="tns:SoftwareUpdateType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="SettingsDefinition" type="tns:SettingsDefinitionType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="ConfigurationPolicy" type="tns:ConfigurationPolicyType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="SoftwareUpdateBundle" type="tns:SoftwareUpdateBundleType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="AuthorizationList" type="tns:AuthorizationListType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="Driver" type="tns:DriverType" substitutionGroup="tns:ConfigurationItem"/>
+    <xs:element name="ApplicationPolicy" type="tns:ApplicationPolicyType" substitutionGroup="tns:ConfigurationItem"/>    
+    <xs:element name="OtherConfigurationItem" type="tns:OtherConfigurationItemType" substitutionGroup="tns:ConfigurationItem"/>
+
+    <!--Global Configuration Items-->
+    <xs:element name="GlobalSettings" type="tns:GlobalSettingsConfigurationItemType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+    <xs:element name="GlobalExpression" type="tns:GlobalExpressionConfigurationItemType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+  
+    <!--Virtual Environment elements -->
+    <xs:element name="VirtualEnvironment" type="tns:VirtualEnvironmentConfigurationItemType" substitutionGroup="tns:ConfigurationItemWithContents"/>
+
+    <!--CI References, used by Baselines-->
+    <xs:element name="BaseReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="BaselineReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="ApplicationReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="BusinessPolicyReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="SoftwareUpdateReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="SoftwareUpdateBundleReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="OperatingSystemReference" type="rules:ConfigurationItemReferenceType"/>
+    <xs:element name="OtherConfigurationItemReference" type="tns:OtherConfigurationItemReferenceType"/>
+    <xs:element name="ExternalConfigurationItemReference" type="tns:ExternalConfigurationItemReferenceType" />
+  
+    <!--Rule override types-->
+    <xs:element name="RuleOverrideReference" type="tns:RuleOverrideReferenceType" />
+    <xs:element name="RuleSeverityOverrideReference" type="tns:RuleSeverityOverrideReferenceType"/>
+
+    <!--Part elements-->
+    <xs:element name="RegistryKey" type="tns:RegistryKeyType" substitutionGroup="tns:Part"/>
+    <xs:element name="RegistryKeyEx" type="tns:RegistryKeyType" substitutionGroup="tns:Part"/>
+    <xs:element name="Folder" type="tns:FolderType" substitutionGroup="tns:Part"/>
+    <xs:element name="File" type="tns:FileType" substitutionGroup="tns:Part"/>
+    <xs:element name="Assembly" type="tns:AssemblyType" substitutionGroup="tns:Part"/>
+    <xs:element name="MSI" type="tns:MSIType" substitutionGroup="tns:Part"/>
+
+  <!--Access control-->
+    <xs:element name="Permissions" type="tns:AccessControlListType"/>
+    <xs:element name="SccmAceEntry" type="tns:SccmAceString"/>
+
+    <!--Settings-->    
+    <xs:element name="RootComplexSetting" type="tns:RootComplexSettingType"/>
+    <xs:element name="ComplexSetting" type="tns:ComplexSettingType"/>
+    <xs:element name="SimpleSetting" type="tns:SimpleSettingType"/>
+
+    <!--Discovery sources-->
+    <xs:element name="RegistryDiscoverySource" type="tns:RegistryDiscoveryType" substitutionGroup="tns:DiscoverySource"/>    
+    <xs:element name="IISMetabaseDiscoverySource" type="tns:IISMetabaseDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="SqlQueryDiscoverySource" type="tns:SqlQueryDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="WqlQueryDiscoverySource" type="tns:WqlQueryDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="ScriptDiscoverySource" type="tns:ScriptDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="XPathDiscoverySource" type="tns:XPathDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="ActiveDirectoryDiscoverySource" type="tns:ActiveDirectoryDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="OtherDiscoverySource" type="tns:OtherDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="UriDiscoverySource" type="tns:UriDiscoveryType" substitutionGroup="tns:DiscoverySource"/>    
+    <xs:element name="CIMDiscoverySource" type="tns:CIMDiscoverySource" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="ParameterizedDiscoverySource" type="tns:ParameterizedDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="PlistKeyDiscoverySource" type="tns:PlistKeyDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+    <xs:element name="MacDetectionDiscoverySource" type="tns:MacDetectionDiscoveryType" substitutionGroup="tns:DiscoverySource"/>
+
+   <!-- Optimizations -->
+  <xs:element name="BaselevelOptimization" type="tns:BaselevelOptimizationType" substitutionGroup="tns:OptimizationBase"/>  
+  
+    <!--OperatingSystem Discovery information-->    
+    <xs:element name="OperatingSystemDiscoveryInfo" type="tns:OSInfoType"/>    
+
+    <!--The digest root element-->
+    <xs:element name="DesiredConfigurationDigest" type="tns:DigestType"/>
+
+    <!--Types-->
+    <xs:simpleType name="FunctionalVersion">
+        <xs:restriction base="xs:unsignedLong" />
+    </xs:simpleType>
+
+    <xs:simpleType name="AuthoringScopeId">
+      <xs:restriction base="xs:Name">
+        <!-- Provider and Object Model puts a limit on ModelName (AuthoringScope + LogicalName) to be upto 256 chars -->
+      </xs:restriction>
+    </xs:simpleType>
+  
+    <xs:simpleType name="LogicalName">
+      <xs:restriction base="xs:ID">
+        <!-- Provider and Object Model puts a limit on ModelName (AuthoringScope + LogicalName) to be upto 256 chars -->
+      </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="DigestType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element ref="tns:ConfigurationItem"/>
+                <xs:element ref="tns:ConfigurationItemWithContents"/>
+            </xs:choice>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="skip" />
+        </xs:sequence>
+        <!--The optional IsComplete attribute is used when the digest xml is embedded
+            within an outer Sdm document. If present and true, it indicates that the
+            surrounding Sdm is fully described by the digest and can be regnerated.
+            If present and false, or missing, the surrounding Sdm contains additional
+            information not captured by the digest.-->
+        <xs:attribute name="IsComplete" type="xs:boolean" use="optional"/>
+        <xs:attribute name="MinVersion" type="tns:FunctionalVersion" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                  The minimum version of the Configuration Manager processor required to process the instance document
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AuthoringVersion" type="tns:FunctionalVersion" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                  The version of the Configuration Manager processor that the instance was authored against
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+   <xs:complexType name="ConfigurationItemOverrideReferenceType" abstract="true">
+        <xs:attribute name="AuthoringScopeId" type="xs:Name" use="required"/>
+        <xs:attribute name="LogicalName" type="xs:Name" use="required"/>
+        <xs:attribute name="Version" type="xs:unsignedInt" use="optional"/>
+    </xs:complexType>
+ 
+   <xs:complexType name="RuleOverrideReferenceType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemOverrideReferenceType">
+                <xs:attribute name="RuleLogicalName" type="xs:Name" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RuleSeverityOverrideReferenceType">
+      <xs:complexContent>
+        <xs:extension base="tns:RuleOverrideReferenceType">
+          <xs:attribute name="Severity" type="rules:RuleSeverityType" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>	
+    
+    <xs:complexType name="OtherConfigurationItemReferenceType">
+        <xs:complexContent>
+            <xs:extension base="rules:ConfigurationItemReferenceType">
+                <xs:attribute name="TemplateName" type="xs:Name" use="required"/>
+                <xs:attribute name="TargetNamespace" type="xs:anyURI" use ="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ExternalConfigurationItemReferenceType">
+        <xs:complexContent>
+            <xs:extension base="tns:OtherConfigurationItemReferenceType">
+                <xs:sequence>
+                    <xs:element name="BaseElement" type="xs:Name" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="FolderPropertyNames">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DateCreated"/>
+            <xs:enumeration value="DateModified"/>
+            <xs:enumeration value="Attributes"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FilePropertyNames">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Size"/>
+            <xs:enumeration value="DateCreated"/>
+            <xs:enumeration value="DateModified"/>
+            <xs:enumeration value="Version"/>
+            <xs:enumeration value="Company"/>
+            <xs:enumeration value="ProductName"/>
+            <xs:enumeration value="SHA1Hash"/>
+            <xs:enumeration value="Attributes"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AssemblyPropertyNames">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Culture"/>
+            <xs:enumeration value="Version"/>
+            <xs:enumeration value="PublicKeyToken"/>
+            <xs:enumeration value="CacheType"/>
+        </xs:restriction>
+    </xs:simpleType>
+  
+    <xs:complexType name="ConfigurationItemType" abstract="true">
+        <xs:sequence>
+            <xs:element ref="rules:Annotation" />
+            <!--CIs derived from the base Configuration Manager types will not explicitly specify a base-->
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element ref="tns:BaseReference" />
+                <xs:element ref="tns:ExternalConfigurationItemReference" />
+            </xs:choice>            
+        </xs:sequence>
+        <xs:attribute name="AuthoringScopeId" type="tns:AuthoringScopeId" use="required"/>
+        <xs:attribute name="LogicalName" type="tns:LogicalName" use="required"/>
+        <xs:attribute name="Version" type="xs:unsignedInt" use="required"/>
+    </xs:complexType>
+
+  <xs:complexType name="SettingsDefinitionType">
+    <xs:complexContent>
+      <xs:extension base="tns:ConfigurationItemType">
+        <xs:sequence>
+          <xs:element name="Settings" type="tns:SettingsType" minOccurs="0" maxOccurs="1"/>
+          <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SettingsType">
+    <xs:sequence>
+      <xs:element ref="tns:SimpleSetting" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ConfigurationPolicyType">
+    <xs:complexContent>
+      <xs:extension base="tns:ConfigurationItemType">
+        <xs:sequence>
+          <xs:element name="Rules" type="tns:RulesType" minOccurs="0" maxOccurs="1"/>
+          <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>
+          <xs:element ref="rules:ApplicabilityRule" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="IsUser" type="xs:boolean" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+    <xs:complexType name="ConfigurationItemWithContentsType" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <xs:sequence>
+                    <xs:element name="Parts" minOccurs="0" maxOccurs="1">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice minOccurs="0" maxOccurs="1">
+                                 <xs:element name="SuppressionReferences">
+                                  <xs:complexType>
+                                   <xs:sequence>
+                                    <xs:choice minOccurs="0" maxOccurs="unbounded">                                     
+                                     <xs:element ref="tns:RuleOverrideReference"/>
+									                   <xs:element ref="tns:RuleSeverityOverrideReference"/>
+                                    </xs:choice>
+                                   </xs:sequence>
+                                  </xs:complexType>
+                                 </xs:element>
+                                </xs:choice>
+                                <xs:element ref="tns:Part" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Settings" minOccurs="0" maxOccurs="1">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:RootComplexSetting"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>                    
+                    <xs:element name="Rules" type="tns:RulesType" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+   
+  
+    <xs:complexType name="RulesType">
+      <xs:sequence>        
+        <xs:element ref="rules:DCMRule" minOccurs="0" maxOccurs="unbounded"/>        
+      </xs:sequence>
+    </xs:complexType>  
+  
+    <xs:simpleType name="NonEmptyStringType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="NamespacePrefixType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="LdapPrefixType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z0-9\-]+://"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DnNameType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="LdapFilterType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="XPathExpressionType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="WqlNamespaceType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--Should prohibit a value that begins with the word "where"-->
+    <xs:simpleType name="WqlWhereClauseType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SqlInstanceNamePattern">
+        <xs:restriction base="xs:string">
+            <!--localhost or localhost\somename or localhost\*-->
+            <xs:pattern value="localhost|localhost\\[\w$#_-]+|localhost\\\*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SqlQueryStringType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="MetabasePathType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RegistryKeyPathType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--
+        Allow for default registry value
+    -->
+    <xs:simpleType name="RegistryValueNameType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RegistryNameFilterType">
+      <xs:restriction base="xs:string">
+        <xs:minLength value="0" />
+      </xs:restriction>
+    </xs:simpleType>
+  
+
+
+  <xs:simpleType name="AssemblyNameType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FileFilterType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FolderFilterType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DefinedPlatformsType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="I386"/>
+            <xs:enumeration value="IA64"/>
+            <xs:enumeration value="x64"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DefinedPlatformNamesType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Win NT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PlatformMinVersionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[1-9]\.[0-9]{2}\.[0-9]{4}\.[0-9]" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PlatformMaxVersionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[1-9]\.[0-9]{2}\.[0-9]{4}\.[0-9]{1,4}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FilePathType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FolderPathType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PlatformApplicabilityQueryType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="20" />
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!--
+    Logically, platform applicability is a boolean value determined as follows (pseudocode):
+        [InstanceCountNotZero(Query1) AND InstanceCountNotZero(Query2)]
+
+    If the Query elements are not present, applicablity is True.
+
+    The attributes are UI hints only and should be ignored for discovery purposes.
+    -->
+    <xs:complexType name="PlatformApplicabilityConditionType">
+        <xs:sequence>
+            <xs:element name="Query1" type="tns:PlatformApplicabilityQueryType"/>
+            <xs:element name="Query2" type="tns:PlatformApplicabilityQueryType"/>
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="Platform" type="tns:DefinedPlatformsType" use="required"/>
+        <xs:attribute name="Name" type="tns:DefinedPlatformNamesType" use="required"/>
+        <xs:attribute name="MinVersion" type="tns:PlatformMinVersionType" use="required"/>
+        <xs:attribute name="MaxVersion" type="tns:PlatformMaxVersionType" use="required"/>
+        <xs:attribute name="DisplayName" type="tns:NonEmptyStringType" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="PartType" abstract="true">
+        <xs:sequence>
+            <xs:element ref="rules:Annotation"/>
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="LogicalName" type="tns:LogicalName" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DiscoverySourceType" abstract="true">
+        <xs:sequence>            
+        </xs:sequence>
+    </xs:complexType>
+
+  <xs:complexType name="OptimizationBaseType" abstract="true">
+    <xs:sequence>      
+    </xs:sequence>
+  </xs:complexType>
+
+    <xs:complexType name="MsiInfoType">
+        <xs:sequence>
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="ProductCode" type="tns:NonEmptyStringType" use="required"/>
+        <xs:attribute name="Version" type="tns:NonEmptyStringType" use="optional"/>
+        <xs:attribute name="IsPerUser" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="ScriptType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="VBScript"/>
+            <xs:enumeration value="JScript"/>
+            <xs:enumeration value="PowerShell"/>
+            <xs:enumeration value="ShellScript"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ScriptInfoType">
+        <xs:sequence>
+            <xs:element name="Script" type="tns:NonEmptyStringType" />
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="ScriptType" type="tns:ScriptType" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="OSInfoType">
+        <xs:sequence>
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="MajorVersion" type="xs:unsignedInt" use="required"/>
+        <xs:attribute name="MinorVersion" type="xs:unsignedInt" use="required"/>
+        <xs:attribute name="BuildVersion" type="xs:unsignedInt" use="required"/>
+        <xs:attribute name="ServicePackMajorVersion" type="xs:unsignedInt" use="optional"/>
+        <xs:attribute name="ServicePackMinorVersion" type="xs:unsignedInt" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="SimpleSettingType">
+        <xs:sequence>
+            <xs:element ref="rules:Annotation"/>            
+            <xs:element ref="tns:DiscoverySource" />
+            <xs:element name="Applicability" type="tns:SettingApplicabilityType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Optimization" type="tns:OptimizationType" minOccurs="0" maxOccurs="1" />            
+        </xs:sequence>
+        <xs:attribute name="LogicalName" type="tns:LogicalName" use="required"/>
+        <xs:attribute name="DataType" type="rules:DataTypeType" use="required"/>
+        <xs:attribute name="ObjectType" type="xs:string" use="optional"/>
+        <xs:attribute name="ApplicableAtUserLogon" type="xs:boolean" use="optional" />
+    </xs:complexType>
+
+  <xs:complexType name="SettingApplicabilityType">
+    <xs:sequence>
+      <xs:element ref="rules:ExpressionBase"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OptimizationType">
+    <xs:sequence>
+      <xs:element ref="tns:OptimizationBase"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="BaselevelOptimizationType">
+    <xs:complexContent>
+      <xs:extension base="tns:OptimizationBaseType">
+        <xs:sequence>
+          <xs:element ref="tns:CIMDiscoverySource" />          
+        </xs:sequence>
+        <xs:attribute name="DataType" type="rules:DataTypeType" use="required"/>
+        <xs:attribute name="ObjectType" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+    <xs:complexType name="RootComplexSettingType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="tns:ComplexSetting" />
+            <xs:element ref="tns:SimpleSetting"/> 
+            <xs:element ref="tns:RuleOverrideReference"/>
+            <xs:element ref="tns:RuleSeverityOverrideReference"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="ComplexSettingType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="tns:ComplexSetting" />
+                <xs:element ref="tns:SimpleSetting"/>
+            </xs:choice>
+            <xs:element ref="rules:Annotation" />
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="LogicalName" type="tns:LogicalName" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="RegistryHiveType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="HKEY_CLASSES_ROOT"/>
+            <xs:enumeration value="HKEY_CURRENT_CONFIG"/>
+            <xs:enumeration value="HKEY_CURRENT_USER"/>
+            <xs:enumeration value="HKEY_LOCAL_MACHINE"/>
+            <xs:enumeration value="HKEY_USERS"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="SccmAceString">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\((A|D|OA|OD);[^;]*;((GA|GR|GW|GX|RC|SD|WD|WO|RP|WP|CC|DC|LC|SW|LO|DT|CR|KA|KR|KW|KX|FR|FW|FX|FA)+|(0x[0-9A-Fa-f]{1,8}));[^;]*;[^;]*;[^;]*\)"/>
+            <!--
+                Standard ACE SDDL String Format:
+                ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid
+
+                In the SccmAceString, the following conventions apply:
+                ace_type:   This will only allow for ALLOW and DENY type ACEs
+                ace_flags:  Not used.
+                rights:     The values used here are the entire set of possible string ACE rights
+                            or a hexadecimal representation.
+                object_guid:         Not used.
+                inherit_object_guid: Not used.
+                account_sid: This will either be one of the well-known SID strings or a non-resolved name.
+                              Non-resolved names will be wrapped in curly braces {}. 
+                              No pattern is used to enforce this though for now.
+                -->
+        </xs:restriction>
+    </xs:simpleType>
+
+
+
+    <xs:complexType name="AccessControlListType">
+        <xs:sequence>
+            <xs:element ref="tns:SccmAceEntry" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+            <xs:attribute name="IsFullySpecified" type="xs:boolean" use="required"/>
+        </xs:complexType>
+
+    <!--CI Types-->
+
+    <xs:complexType name="BaselineType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <xs:sequence>
+                    <xs:element name="RequiredItems">
+                        <xs:complexType>
+                            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                <xs:element ref="tns:ApplicationReference"/>
+                                <xs:element ref="tns:BusinessPolicyReference"/>
+                            </xs:choice>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ProhibitedItems">
+                        <xs:complexType>
+                            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                <xs:element ref="tns:ApplicationReference"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="OptionalItems">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:ApplicationReference" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="OperatingSystems">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:OperatingSystemReference" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="SoftwareUpdates">
+                        <xs:complexType>
+                            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                <xs:element ref="tns:SoftwareUpdateReference" />
+                                <xs:element ref="tns:SoftwareUpdateBundleReference" />
+                            </xs:choice>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Baselines">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:BaselineReference" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="OtherConfigurationItems">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:OtherConfigurationItemReference" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ApplicationType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemWithContentsType">
+                <xs:sequence>
+                    <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+                    <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>                    
+                    <!--Either MSI or Script based discovery-->
+                    <xs:choice>
+                        <xs:element name="MsiDiscoveryInfo" type="tns:MsiInfoType"/>
+                        <xs:element name="ScriptDiscoveryInfo" type="tns:ScriptInfoType"/>
+                        <!--<xs:element name="DeploymentTypeReference" type="rules:DeploymentTypeReferenceType"/>-->
+                      <xs:element ref="rules:DeploymentTypeRule" minOccurs="0" maxOccurs="1"/>
+                    </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="OperatingSystemType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemWithContentsType">
+                <xs:sequence>
+                  <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+                  <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>
+                  <xs:choice>
+                      <xs:element ref="tns:OperatingSystemDiscoveryInfo"/>
+                      <xs:element ref="rules:OperatingSystemDiscoveryRule"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="BusinessPolicyType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemWithContentsType">
+                <xs:sequence>
+                  <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+                  <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>                  
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SoftwareUpdateType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <xs:sequence>
+                    <xs:element ref="tns:ConfigurationMetadata" />
+                    <xs:element name="SupersededUpdates" minOccurs="0" maxOccurs="1">
+                        <xs:complexType>
+                            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                <xs:element ref="tns:SoftwareUpdateReference" />
+                                <xs:element ref="tns:SoftwareUpdateBundleReference" />
+                            </xs:choice>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SoftwareUpdateBundleType">
+        <xs:complexContent>
+            <xs:extension base="tns:SoftwareUpdateType">
+                <xs:sequence>
+                    <xs:element name="Updates">
+                        <xs:complexType>
+                            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                <xs:element ref="tns:SoftwareUpdateReference" />
+                                <xs:element ref="tns:SoftwareUpdateBundleReference" />
+                            </xs:choice>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AuthorizationListType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <xs:sequence>
+                    <xs:element name="Updates">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:SoftwareUpdateReference" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="DriverType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <xs:sequence>
+                    <xs:element name="DriverIdentity" type="tns:DriverIdentityType"/>
+                    <xs:element name="ModelSections">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="ModelSection" type="tns:ModelSectionType" minOccurs="1" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="BootCriticalEntries" minOccurs="0" maxOccurs="1">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="BootCriticalEntry" type="tns:BootCriticalEntryType" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="PlatformApplicabilityConditions" >
+                        <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="PlatformApplicabilityCondition" type="tns:PlatformApplicabilityConditionType" minOccurs="0"  maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <!--
+                    Currently used by Software Updates and Driver Catalog for defining content
+                    among other things.
+                    -->
+                    <xs:element ref="tns:ConfigurationMetadata" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ApplicationPolicyType">
+      <xs:complexContent>
+        <xs:extension base="tns:ConfigurationItemType">
+          <xs:sequence>
+            <xs:element name="Application" type="rules:ConfigurationItemReferenceType"/>            
+            <xs:element name="ApplicationDeploymentRules" type="tns:ApplicationDeploymentRulesType"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>    
+    </xs:complexType>  
+  
+    <xs:complexType name="OtherConfigurationItemType">
+        <xs:complexContent>
+            <xs:extension base="tns:ConfigurationItemType">
+                <!--Empty extension-->
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Gloabl Settings CI-->
+    <xs:complexType name="GlobalSettingsConfigurationItemType">
+      <xs:complexContent>
+        <xs:extension base="tns:ConfigurationItemWithContentsType">
+          <xs:sequence>
+            <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+            <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    
+    <!--Global Expression CI-->
+    <xs:complexType name="GlobalExpressionConfigurationItemType">
+      <xs:complexContent>
+        <xs:extension base="tns:ConfigurationItemWithContentsType">
+          <xs:sequence>
+            <!--No PlatformApplicabilityCondition means applicable to all platforms-->
+            <xs:element ref="rules:PlatformApplicabilityCondition" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+  <!--Virtual Environment CI-->
+  <xs:complexType name="VirtualEnvironmentConfigurationItemType">
+    <xs:complexContent>
+      <xs:extension base="tns:ConfigurationItemWithContentsType">
+        <xs:sequence>
+          <xs:element ref="rules:VirtualEnvironmentRule" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  
+    <!--Platform Configuration Item -->
+    <xs:complexType name="PlatformConfigurationItemType">
+      <xs:complexContent>
+        <xs:extension base="tns:ConfigurationItemWithContentsType">
+          <!--No specific schema for Platform Configuration Item-->
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <!--Part types-->
+
+    <xs:complexType name="RegistryKeyType">
+        <xs:complexContent>
+            <xs:extension base="tns:PartType">
+                <xs:sequence>
+                    <xs:element name="Key" type="tns:RegistryKeyPathType" />
+                    <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="Hive" type="tns:RegistryHiveType" use="required"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional" />
+                <xs:attribute name="ApplicableAtUserLogon" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+  
+    <xs:complexType name="FolderType">
+        <xs:complexContent>
+            <xs:extension base="tns:PartType">
+                <xs:sequence>
+                    <!--
+                    Absolute path to the folder. Explicit UNC names
+                    are not supported.
+                    -->
+                    <xs:element name="Path" type="tns:FilePathType"/>
+                    <xs:element name="Filter" type="tns:FolderFilterType"/>
+                    <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional" />
+                <xs:attribute name="ApplicableAtUserLogon" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+  
+
+    <xs:complexType name="FileType">
+        <!--The same comments from the FolderType apply.-->
+        <xs:complexContent>
+            <xs:extension base="tns:PartType">
+                <xs:sequence>
+                    <!--
+                    Absolute path to the file. Explicit UNC names
+                    are not supported.
+                    -->
+                    <xs:element name="Path" type="tns:FilePathType"/>
+                    <xs:element name="Filter" type="tns:FileFilterType"/>
+                    <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional" />
+                <xs:attribute name="ApplicableAtUserLogon" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AssemblyType">
+        <xs:complexContent>
+            <xs:extension base="tns:PartType">
+                <xs:sequence>
+                    <xs:element name="AssemblyName" type="tns:AssemblyNameType"/>
+                    <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="MSIType">
+      <xs:complexContent>
+        <xs:extension base="tns:PartType">
+          <xs:sequence>
+            <xs:element name="ProductCode" type="xs:string" minOccurs="1" maxOccurs="1"/>
+          </xs:sequence>
+          <xs:attribute name="IsPerUser" type="xs:boolean" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+  <!--Discovery Source Types-->
+
+    <!--
+    Base:       Only the base container (typically specified via Path) is searched.
+
+    OneLevel:   Only the first level of containers beneath the base container is searched,
+                including the base container itself.
+    Subtree:    The entire subtree of containers is searched.
+    -->
+    <xs:simpleType name="SearchDepthType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Base"/>
+            <xs:enumeration value="OneLevel"/>
+            <xs:enumeration value="Subtree"/>
+      
+      
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="RegistryDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                  <xs:element name="Key" type="tns:RegistryKeyPathType"/>
+                  <xs:choice>
+                    <xs:element name="ValueName" type="tns:RegistryValueNameType"/>
+                    <xs:element name="ValuePattern" type="tns:RegistryNameFilterType" />
+                  </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="Hive" type="tns:RegistryHiveType" use="required"/>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional" />
+                <xs:attribute name="CreateMissingPath" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+  <xs:complexType name="IISMetabaseDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="Path" type="tns:MetabasePathType"/>
+                    <xs:element name="PropertyID" type="xs:unsignedInt"/>
+                </xs:sequence>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SqlQueryDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="Instance" type="tns:SqlInstanceNamePattern" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="Database" type="tns:NonEmptyStringType"/>
+                    <xs:element name="Query" type="tns:SqlQueryStringType"/>
+                    <xs:element name="ColumnName" type="tns:NonEmptyStringType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="WqlQueryDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="Namespace" type="tns:WqlNamespaceType" />
+                    <xs:element name="Class" type="tns:NonEmptyStringType"/>
+                    <xs:element name="Property" type="tns:NonEmptyStringType"/>
+                    <xs:element name="Where" type="tns:WqlWhereClauseType" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ScriptDefinitionType">
+      <xs:simpleContent>
+        <xs:extension base="tns:NonEmptyStringType">
+          <xs:attribute name="ScriptType" type="tns:ScriptType" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  
+    <xs:complexType name="ScriptDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="DiscoveryScriptBody" type="tns:ScriptDefinitionType" />
+                    <xs:element name="RemediationScriptBody" type="tns:ScriptDefinitionType" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="XPathNamespaceDeclarationType">
+        <xs:attribute name="Prefix" type="tns:NamespacePrefixType" use="required"/>
+        <xs:attribute name="Namespace" type="xs:anyURI" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="NamespaceDeclarations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="NamespaceDeclaration" type="tns:XPathNamespaceDeclarationType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="XPathExpression" type="tns:XPathExpressionType"/>
+
+    <xs:complexType name="XPathDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="FilePath" type="tns:FilePathType"/>
+                    <xs:element name="Filter" type="tns:FileFilterType"/>
+                    <xs:element ref="tns:XPathExpression" />
+                    <xs:element ref="tns:NamespaceDeclarations" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+                <xs:attribute name="Is64Bit" type="xs:boolean" use="required"/>
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ActiveDirectoryDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:sequence>
+                    <xs:element name="LdapPrefix" type="tns:LdapPrefixType" />
+                    <xs:element name="DnName" type="tns:DnNameType"/>
+                    <xs:element name="Filter" type="tns:LdapFilterType"/>
+                    <xs:element name="Attribute" type="tns:NonEmptyStringType"/>
+                </xs:sequence>
+                <xs:attribute name="Depth" type="tns:SearchDepthType" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+  <xs:element name="KeyProperties" type="tns:KeyPropertiesType" />
+  <xs:element name="KeyProperty" type="tns:KeyPropertyType" />
+
+  <xs:complexType name="KeyPropertyType">
+    <xs:attribute name="Name" type="xs:Name" use="required"/>
+  </xs:complexType>
+                  
+  
+  <xs:complexType name="KeyPropertiesType">
+    <xs:sequence>
+      <xs:element ref="tns:KeyProperty" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="CIMDiscoverySource">
+    <xs:complexContent>
+      <xs:extension base="tns:DiscoverySourceType">
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="rules:CIMReference"/>
+            <xs:element ref="tns:KeyProperties" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element name="ConfigurationPointContext" type="xs:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+            <xs:element name="ConfigurationPoint" type="xs:string" minOccurs="1" maxOccurs="1" nillable="false"/>
+            <xs:element ref="tns:KeyProperties" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+        </xs:choice>
+        <xs:attribute name="KeyProperty" type="xs:boolean" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+    <xs:complexType name="UriDiscoveryType">
+      <xs:complexContent>
+        <xs:extension base="tns:DiscoverySourceType">
+          <xs:attribute name="Uri" type="xs:string" use="required"/>
+          <xs:attribute name="IsNode" type="xs:boolean" use="optional" />
+          <xs:attribute name="TypeOfUri" type="tns:OmaUriType" use="optional" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PlistKeyDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:attribute name="ApplicationID" type="tns:NonEmptyStringType" use="required"/>              
+                <xs:attribute name="KeyName" type="tns:NonEmptyStringType" use="required" />
+                <xs:attribute name="IsPerUser" type="xs:boolean" use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+  <xs:simpleType name="MacDetectionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Package"/>
+      <xs:enumeration value="AppBundle"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="MacDetectionDiscoveryType">
+    <xs:complexContent>
+      <xs:extension base="tns:DiscoverySourceType">
+        <xs:attribute name="DetectionId" type="tns:NonEmptyStringType" use="required"/>
+        <xs:attribute name="DetectionType" type="tns:MacDetectionType" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ParameterizedDiscoveryType">
+    <xs:complexContent>
+      <xs:extension base="tns:DiscoverySourceType">
+        <xs:sequence>
+          <xs:element ref="rules:SettingReference" minOccurs="1" maxOccurs="1"/>
+          <xs:element ref="rules:ConstantValueList" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+    <xs:simpleType name="OmaUriType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OmaUri" />
+        </xs:restriction>
+    </xs:simpleType>
+   
+  <xs:complexType name="OtherDiscoveryType">
+        <xs:complexContent>
+            <xs:extension base="tns:DiscoverySourceType">
+                <xs:choice minOccurs="0">
+                    <xs:element name="ExternalXPathDiscoveryInfo">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="tns:XPathExpression">
+                                    <xs:annotation>
+                                        <xs:documentation>
+                                            potentially namespace prefixed XPath expression
+                                        </xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                                <xs:element ref="tns:NamespaceDeclarations">
+                                    <xs:annotation>
+                                        <xs:documentation>
+                                            Additional namespaces and associated prefixes used in the XPath
+                                            expression above
+                                        </xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--
+    The following definitions are used to support Driver Catalog driver definitions
+    -->
+
+    <xs:complexType name="DriverIdentityType">
+        <xs:attribute name="Type" type="xs:string" use="required"/>
+        <xs:attribute name="INFFile" type="xs:string" use="required"/>
+        <xs:attribute name="Class" type="xs:string" use="required"/>
+        <xs:attribute name="Provider" type="xs:string" use="required"/>
+        <xs:attribute name="Date" type="xs:string" use="required"/>
+        <xs:attribute name="Version" type="xs:string" use="required"/>
+        <xs:attribute name="Signed" type="xs:boolean" use="required"/>
+        <xs:attribute name="Signer" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="ModelSectionType">
+        <xs:sequence>
+            <xs:element name="Model" type="tns:DriverModelType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ManufacturerId" type="xs:string" use="required"/>
+        <xs:attribute name="ManufacturerName" type="xs:string" use="required"/>
+        <xs:attribute name="TargetOSVersion" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DriverModelType">
+        <xs:sequence>
+            <xs:element name="HwId" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Compatible" type="xs:boolean" use="optional" default="false" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Enabled" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="BootCriticalEntryType">
+        <xs:sequence>
+            <xs:element name="Description" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="HardwareComponent" type="xs:string" use="required"/>
+        <xs:attribute name="ID" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!--
+    The following definitions are taken from the schema definiton previously used by
+    Software Updates when generating the Sdm v2 packages. They are copied to this
+    namespace as an initial step toward schema consolidation.
+    -->
+
+    <xs:element name="ConfigurationMetadata">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Provider" type="tns:Provider" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="Version" type="xs:string" use="optional" default="1.0" />
+            <xs:attribute name="SmsUniqueIdentity" type="xs:string" use="optional" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="FourPartVersion">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(0|[1-5][0-9]{0,4}|[7-9][0-9]{0,3}|6[0-4][0-9]{0,3}|6[6-9][0-9]{0,2}|65|65[0-4][0-9]{0,2}|65[6-9][0-9]?|655|655[0-2][0-9]?|655[4-9]|6553[0-5]?).(0|[1-5][0-9]{0,4}|[7-9][0-9]{0,3}|6[0-4][0-9]{0,3}|6[6-9][0-9]{0,2}|65|65[0-4][0-9]{0,2}|65[6-9][0-9]?|655|655[0-2][0-9]?|655[4-9]|6553[0-5]?).(0|[1-5][0-9]{0,4}|[7-9][0-9]{0,3}|6[0-4][0-9]{0,3}|6[6-9][0-9]{0,2}|65|65[0-4][0-9]{0,2}|65[6-9][0-9]?|655|655[0-2][0-9]?|655[4-9]|6553[0-5]?).(0|[1-5][0-9]{0,4}|[7-9][0-9]{0,3}|6[0-4][0-9]{0,3}|6[6-9][0-9]{0,2}|65|65[0-4][0-9]{0,2}|65[6-9][0-9]?|655|655[0-2][0-9]?|655[4-9]|6553[0-5]?)" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="FilePath">
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:complexType name="File">
+        <xs:attribute name="Name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Name of the file on the system (including subfolders, relative to the component root).</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Version" type="tns:FourPartVersion" use="optional">
+            <xs:annotation>
+                <xs:documentation>File version information</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Hash" type="xs:hexBinary" use="optional">
+            <xs:annotation>
+                <xs:documentation>A hash of the file referred to by name. A hexadecimal string of length depending on the hash algorithm.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="HashAlgorithm" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Algorithm used to create a hash of the file.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Size" type="xs:unsignedLong" use="optional">
+            <xs:annotation>
+                <xs:documentation>The size of the files in bytes</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="SourceURL" type="xs:anyURI" use="optional">
+            <xs:annotation>
+                <xs:documentation>Location (URL) of the file for download.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ImportPath" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Import location, represented by a path (with file name), relative to import root.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Signed" type="xs:boolean" use="optional">
+            <xs:annotation>
+                <xs:documentation>Specifies whether the content of the file has been signed.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="Content">
+        <xs:sequence>
+            <xs:element name="FileContent" type="tns:File" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ContentDescription" type="rules:LocalizableString" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="ContentId" type="xs:string" use="required" />
+        <xs:attribute name="Version" type="xs:unsignedLong" use="optional"/>
+        <xs:attribute name="HashAlgorithm" type="xs:string"  use="optional"/>
+        <xs:attribute name="Hash" type="xs:hexBinary" use="optional" />
+        <xs:attribute name="HashVersion" type="xs:unsignedLong" use="optional" />
+    </xs:complexType>
+    <xs:simpleType name="LanguageType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="VBScript" />
+            <xs:enumeration value="JScript" />
+            <xs:enumeration value="WindowsScript" />
+            <xs:enumeration value="Wql" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ApplicabilityRuleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Script" />
+            <xs:enumeration value="Wql" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MethodType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Detect" />
+            <xs:enumeration value="Install" />
+            <xs:enumeration value="Remove" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="WQLQuery">
+        <xs:sequence>
+            <xs:element name="NameSpace" type="xs:string" />
+            <xs:element name="Query" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ScriptQuery">
+        <xs:sequence>
+            <xs:element name="Language" type="tns:LanguageType" />
+            <xs:element name="Definition" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Applicability">
+        <xs:sequence>
+            <xs:element name="Parameter" type="tns:PropertyBag" />
+        </xs:sequence>
+        <xs:attribute name="RuleType" type="tns:ApplicabilityRuleType" />
+    </xs:complexType>
+    <xs:complexType name="PropertyValue">
+        <xs:attribute name="Name" type="xs:string" use="required" />
+        <xs:attribute name="Value" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="PropertyBag">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="Property" type="tns:PropertyValue" />
+        </xs:choice>
+        <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="StatusCode">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="Code">
+                <xs:complexType>
+                    <xs:attribute name="Value" type="xs:unsignedLong" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Range">
+                <xs:complexType>
+                    <xs:attribute name="Start" type="xs:unsignedLong" use="required" />
+                    <xs:attribute name="End" type="xs:unsignedLong" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="Type" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="Operation">
+        <xs:sequence>
+            <xs:element name="Content" type="tns:Content" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Parameter" type="tns:PropertyBag" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="StatusCode" type="tns:StatusCode" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="tns:MethodType" use="required" />
+    </xs:complexType>
+    <xs:complexType name="Provider">
+        <xs:sequence>
+            <xs:element name="Applicability" type="tns:Applicability" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Operation" type="tns:Operation" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="SourceType" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="ApplicationDeploymentRulesType">
+      <xs:sequence>
+        <xs:element ref="rules:DeploymentTypeRule" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,25 @@
+﻿Installing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll
+   logtoconsole = 
+Creating performance counter category ConfigMgr 2012 Console - WMI Query Engine.
+Committing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll'.
+Affected parameters are:
+   showcallstack = 
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.InstallLog
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll
+   logtoconsole = 
+Installing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll'.
+Affected parameters are:
+   logtoconsole = 
+   showcallstack = 
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.InstallLog
+Committing assembly 'G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll'.
+Affected parameters are:
+   logtoconsole = 
+   showcallstack = 
+   assemblypath = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.dll
+   logfile = G:\Program Files\Microsoft Configuration Manager\AdminConsole\bin\AdminUI.WqlQueryEngine.InstallLog
